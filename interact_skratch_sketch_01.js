@@ -1,7 +1,6 @@
 
 var lil_guys = [];
-var num_lil_guys = 100;
-
+var num_guys= 90;
 var player = [];
 //////////////////////////////////////
 
@@ -22,7 +21,7 @@ function setup() {
   background(265, 16, 32);
 
 
-  for (var i = 0; i<10;i++){
+  for (var i = 0; i<num_guys;i++){
     lil_guys[i] = new lil_guy(random(0,w),random(0,h),6,3,1);
   }
 
@@ -32,11 +31,9 @@ function setup() {
 function draw() {
 
   //ellipse(mouseX,mouseY, 5,5);
-  //background(265, 16, 32);
-  for (var i = 0; i<10;i++){
-    lil_guys[i].dir();
-    lil_guys[i].jump();
-    //lil_guys[i].avoid(lil_guys, 10);
+  background(265, 16, 32);
+  for (var i = 0; i<lil_guys.length;i++){
+    lil_guys[i].move();
     lil_guys[i].display();
   }
 
@@ -49,35 +46,38 @@ function lil_guy(StartX, StartY, Size, Speed, Type) {
   this.sz = Size;
   this.sp = Speed;
   this.t = Type;
-  this.vx = 1;
-  this.vy = 1;
 
   this.display = function(){
     fill(82, 39, 54);
-    ellipse(this.x, this.y, this.sz, this.sz*4);
+    ellipse(this.x, this.y, this.sz, this.sz);
   }
-  this.dir = function(){
+
+
+  this.move = function(){
+/////////////////////////------------cursor------------------------\\\\\\\\\\\\\\\\\\\\\\\\\\
     hl = sqrt(sq(mouseX-this.x)+sq(mouseY-this.y));
-    this.vx = (mouseX-this.x)/hl;
-    this.vy = (mouseY-this.y)/hl;
-  }
-  this.jump = function(){
-    this.x = this.x+(this.vx*this.sp);
-    this.y = this.y+(this.vy*this.sp);
-  }
-  this.avoid = function(group, group_sz){
-    for (var i = 0; i<10;i++){
-      if (   (sqrt(sq(mouseX-this.x)+sq(mouseY-this.y))) < this.sz*4   ){
+    vx = (mouseX-this.x)/ hl;
+    vy = (mouseY-this.y)/ hl;
+/////////////////////////------------avodiance------------------------\\\\\\\\\\\\\\\\\\\\\\\\\\
+    ax = 0;
+    ay = 0;
+    for (var i = 0; i<lil_guys.length;i++){
 
+      var separation = this.sz*3
+      var dis = sqrt(   sq(lil_guys[i].x-this.x)  +  sq(lil_guys[i].y-this.y)  )
+      if (   dis  < separation && dis != 0  ){
+        ax+=((lil_guys[i].x-this.x)/dis)*-4;
+        ay+=((lil_guys[i].y-this.y)/dis)*-4;
       }
-      group[i].x<
-      group[i].y
-
     }
-
+/////////////////////////------------move------------------------\\\\\\\\\\\\\\\\\\\\\\\\\\
+    this.x = (this.x + vx + ax);
+    this.y = (this.y + vy + ay);
+    //this.x = (this.x  + ax);
+    //this.y = (this.y  + ay);
   }
-
 }
+
 
 
 function runGame() { ///x,y,startsize , number of steps, length
